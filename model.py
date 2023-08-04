@@ -111,9 +111,9 @@ class Model:
             # evaluate
             acc, loss = self.sess.run([self.accuracy, self.cross_entropy], feed_dict={self.X: self.dataset.test_images, self.Y_: self.dataset.test_labels, self.pkeep: 1})
 
-            print('Step: ' + str(i) + '\tAccuracy: ' + str(acc) + '\tLoss: ' + str(loss))
+            print(f'Step: {str(i)}' + '\tAccuracy: ' + str(acc) + '\tLoss: ' + str(loss))
         else:
-            print('Step: ' + str(i))
+            print(f'Step: {str(i)}')
 
         batch_x, batch_y = self.dataset.getTrainBatch(200)
 
@@ -124,9 +124,9 @@ class Model:
 
         # Save
         if (i % 50 == 0):
-            path = checkpointFolder + '/model_' + str(ident) + '_['+ str(i) + '].ckpt'
+            path = f'{checkpointFolder}/model_{str(ident)}_[{str(i)}].ckpt'
             p = self.saver.save(self.sess, path)
-            print('Checkpoint saved ['+p+']')
+            print(f'Checkpoint saved [{p}]')
 
 
     def run_predict(self, images):

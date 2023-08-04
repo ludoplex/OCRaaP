@@ -9,7 +9,7 @@ s = time.time()
 model = model.Model(fromCheckpoint='milestones/classifier_v1.0.ckpt')
 e = time.time()
 
-print(str(e-s) + ' seconds to load model')
+print(f'{str(e - s)} seconds to load model')
 
 image = cv2.imread('decode_tests/cat.jpeg')
 image = cv2.resize(image, (1000,1000), None)
@@ -21,7 +21,7 @@ s = time.time()
 out = model.run_predict(symbols)
 e = time.time()
 
-print(str(e-s) + ' seconds to predict')
+print(f'{str(e - s)} seconds to predict')
 
 predictions = np.argmax(out[0], 1)
 

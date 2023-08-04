@@ -48,13 +48,13 @@ class Dataset:
             vec[i] = 1
 
             for ftrain in os.listdir(trainpath):
-                img = cv2.imread(trainpath + '/' + ftrain, cv2.IMREAD_GRAYSCALE)
+                img = cv2.imread(f'{trainpath}/{ftrain}', cv2.IMREAD_GRAYSCALE)
                 img = cv2.resize(img, (40, 40), None)
                 self.train_images.append(img)
                 self.train_labels.append(vec.copy())
 
             for ftest in os.listdir(testpath):
-                img = cv2.imread(testpath + '/' + ftest, cv2.IMREAD_GRAYSCALE)
+                img = cv2.imread(f'{testpath}/{ftest}', cv2.IMREAD_GRAYSCALE)
                 img = cv2.resize(img, (40, 40), None)
                 self.test_images.append(img)
                 self.test_labels.append(vec.copy())

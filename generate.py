@@ -51,20 +51,20 @@ def run(argv):
         elif opt == '-v':
             verify = True
 
-    if image_file == None or (out_path == None and verify == False):
+    if image_file is None or out_path is None and verify == False:
         help()
         sys.exit(2)
 
     # Do the thing
-    print('Scanning: ' + image_file)
+    print(f'Scanning: {image_file}')
 
     image = cv2.imread(image_file, cv2.IMREAD_GRAYSCALE)
     symb,_ = image_parser.get_symbols(image)
 
-    print('Found ' + str(len(symb)) + ' symbols')
+    print(f'Found {len(symb)} symbols')
 
     if not verify:
-        print('Writing to: ' + str(out_path))
+        print(f'Writing to: {str(out_path)}')
 
     i = 0;
 
@@ -85,7 +85,7 @@ def run(argv):
             convs = get_convolutions(sym)
 
             for conv in convs:
-                f = out_path + (str(i).zfill(4) + '.jpg')
+                f = f'{out_path}{str(i).zfill(4)}.jpg'
                 cv2.imwrite(f, conv)
 
                 i += 1

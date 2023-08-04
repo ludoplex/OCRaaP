@@ -111,25 +111,25 @@ class Program:
 
     def err(self, code, reason, loc, theta=None, disp=True):
         print('\nERROR [' + str(code) + ']:')
-        print('- ' + reason)
+        print(f'- {reason}')
 
         if disp:
             for l in loc:
                 x,y,p,s = self.sym_list[l]
                 cv2.circle(self.err_image, (x, y) , s, (0,0,255), 2)
-                print('@ (' + str(x) + ', ' + str(y) + ')')
+                print(f'@ ({str(x)}, {str(y)})')
 
             if theta:
                 px = int(x + np.cos(theta) * 70)
                 py = int(y + np.sin(theta) * 70)
                 cv2.line(self.err_image, (x, y), (px, py), (0,0,255), 2)
 
-            self.show('Error [' + str(code) + ']', self.err_image)
+            self.show(f'Error [{str(code)}]', self.err_image)
 
         sys.exit(1)
 
     def parseSource(self, source):
-        self.dbg('* Loading source: [' + source + ']')
+        self.dbg(f'* Loading source: [{source}]')
 
         # read the image
         prog = cv2.imread(source, cv2.IMREAD_GRAYSCALE)
@@ -149,21 +149,19 @@ class Program:
             # storage
             self.sym_list.append((x,y,p,s))
 
-            i = len(self.sym_list) - 1
-
-            # look for the start point
             if p == 0:
-                # Error: duplicate start point
+                i = len(self.sym_list) - 1
+
                 if self.r_start != None:
                     self.err(10, 'Too sad', [self.r_start, i])
                 else:
                     self.r_start = i
 
             # debug info
-            self.dbg('\t[' + str(int(x)) + ', ' + str(int(y)) + ', ' + title(p) + ']')
+            self.dbg('\t[' + str(x) + ', ' + str(y) + ', ' + title(p) + ']')
 
         # Error: no start point
-        if self.r_start == None:
+        if self.r_start is None:
             self.err(11, 'Too happy', [])
 
 
@@ -190,7 +188,13 @@ class Program:
         o = self.processSymbol(p, sym)
 
         # debugging info
-        self.dbg('[' + str(i) + '](' + str(x).zfill(3) + ', ' + str(y).zfill(3) + '){' + s_title(p) +'} :: ' + str(self.r_stack))
+        self.dbg(
+            f'[{str(i)}]({str(x).zfill(3)}, {str(y).zfill(3)}'
+            + '){'
+            + s_title(p)
+            + '} :: '
+            + str(self.r_stack)
+        )
 
         if self.debug:
             # debug view
@@ -288,8 +292,7 @@ class Program:
 
     def pop(self):
         if len(self.r_stack) > 0:
-            v = self.r_stack.pop()
-            return v
+            return self.r_stack.pop()
         else:
             self.err(20, 'Stack underflow', [self.r_pointer])
 
@@ -314,7 +317,7 @@ class Program:
 
         # TODO: improve distance checking algorithm
         for i in range(len(self.sym_list)):
-            if (i != self.r_prev_pointer) and (i != self.r_pointer):
+            if i not in [self.r_prev_pointer, self.r_pointer]:
 
                 x,y,_,_ = self.sym_list[i]
                 d = dist2(x,y,px,py)
@@ -329,16 +332,16 @@ class Program:
                 if (diff > (np.pi / 2)):
                     continue
 
-                if ((d < dist_sym or dist_sym == None) and d < pow(120,2)):
+                if (d < dist_sym or dist_sym is None) and d < pow(120, 2):
                     dist_sym = d
                     next_sym = i
 
-                if (dist_sym == None and (cost < cost_sym or cost_sym == None)):
+                if dist_sym is None and (cost < cost_sym or cost_sym is None):
                     cost_sym = cost
                     next_sym = i
 
 
-        if next_sym == None:
+        if next_sym is None:
             self.err(22, 'you\'re lost', [self.r_pointer], theta=self.r_pointer_dir)
 
         return next_sym
@@ -346,7 +349,7 @@ class Program:
 ### CLI
 
 def help(cmd):
-    print('Usage: ' + cmd + ' -i image [ -d ] [ -q ] [ -h ]')
+    print(f'Usage: {cmd} -i image [ -d ] [ -q ] [ -h ]')
     print('\nOptions:')
     print('\t-d : run in debug mode')
     print('\t-q : run in quiet mode (only print program output)')
@@ -374,7 +377,7 @@ def run(argv):
         elif opt == '-q':
             quiet = True
 
-    if image_path == None:
+    if image_path is None:
         help(argv[0])
         sys.exit(-1)
 
